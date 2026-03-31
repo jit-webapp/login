@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James IT - Secure Gateway</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0c;
+            --card-bg: #16161a;
+            --primary-purple: #8b5cf6;
+            --text-gold: #e2e8f0;
+            --accent: #d946ef;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle at top right, #1e1b4b, var(--bg-color));
+            font-family: 'Kanit', sans-serif;
+            color: var(--text-gold);
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--primary-purple); }
+        p { font-size: 0.9rem; opacity: 0.7; margin-bottom: 2rem; }
+
+        #status-msg { margin-top: 1rem; font-size: 0.9rem; color: var(--accent); min-height: 24px; }
+
+        .btn-enter {
+            display: none;
+            margin-top: 2rem;
+            padding: 14px 35px;
+            background: linear-gradient(45deg, var(--primary-purple), var(--accent));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(217, 70, 239, 0.3);
+        }
+
+        .btn-enter:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(217, 70, 239, 0.5); }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <h1>James IT Secure Portal</h1>
+    <p>Finance Manager Pro - Restricted Area</p>
+
+    <div id="g_id_onload"
+         data-client_id="609931942988-p7gu05eol70r5lasq2b9oakillrtmt1f.apps.googleusercontent.com"
+         data-callback="hCR"
+         data-auto_prompt="false">
+    </div>
+    
+    <div id="l-c">
+        <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+    </div>
+
+    <div id="status-msg"></div>
+
+    <a href="javascript:void(0)" id="enter-btn" class="btn-enter">
+        เข้าสู่ Finance Manager Pro
+    </a>
+</div>
+
+<script>
+    // พรางชื่อฟังก์ชันและตัวแปรเพื่อความปลอดภัยเบื้องต้น
+    function dJR(t) {
+        try {
+            return JSON.parse(decodeURIComponent(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+        } catch (e) { return null; }
+    }
+
+    async function hCR(r) {
+        const p = dJR(r.credential);
+        if (!p) return;
+
+        const sm = document.getElementById('status-msg');
+        const eb = document.getElementById('enter-btn');
+        const lc = document.getElementById('l-c');
+
+        lc.style.display = 'none';
+        sm.innerHTML = "กำลังตรวจสอบสิทธิ์...";
+
+        try {
+            // URL ของ Apps Script ที่คุณ James Deploy ไว้
+            const u = 'https://script.google.com/macros/s/AKfycbxFvRjHbP_x0MGjzwlfcPHaIf__JRWmIF4tD_AkJfXhBZs6g5vBXsVlzSmtaYKTb6N9Pg/exec';
+            
+            const res = await fetch(`${u}?email=${encodeURIComponent(p.email)}`, { method: 'GET' });
+            const result = await res.json();
+
+            if (result.status === "success") {
+                sm.innerHTML = "ยินดีต้อนรับคุณ " + p.name;
+                sm.style.color = "#4ade80"; // สีเขียว
+                
+                // รับ URL ลับจาก Server มาใส่ในปุ่ม
+                eb.href = result.data; 
+                eb.style.display = 'inline-block';
+            } else {
+                sm.innerHTML = result.data || "คุณไม่มีสิทธิ์เข้าใช้งาน";
+                sm.style.color = "#f87171"; // สีแดง
+                setTimeout(() => location.reload(), 3000);
+            }
+
+        } catch (err) {
+            sm.innerHTML = "ระบบขัดข้อง โปรดติดต่อ James IT";
+            setTimeout(() => location.reload(), 3000);
+        }
+    }
+</script>
+
+</body>
+</html>
