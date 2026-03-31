@@ -105,7 +105,7 @@
 
         try {
             // URL ของ Apps Script ที่คุณ James Deploy ไว้
-            const u = 'https://script.google.com/macros/s/AKfycbxFvRjHbP_x0MGjzwlfcPHaIf__JRWmIF4tD_AkJfXhBZs6g5vBXsVlzSmtaYKTb6N9Pg/exec';
+            const u = 'https://script.google.com/macros/s/AKfycbyjbdNNVL16et_xyhPszZFQElIBMaZrtMn5SQrXL74RdOAcIWkCBuOplHE7y65LvPmCRg/exec';
             
             const res = await fetch(`${u}?email=${encodeURIComponent(p.email)}`, { method: 'GET' });
             const result = await res.json();
