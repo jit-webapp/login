@@ -84,51 +84,7 @@
     </a>
 </div>
 
-<script>
-    // พรางชื่อฟังก์ชันและตัวแปรเพื่อความปลอดภัยเบื้องต้น
-    function dJR(t) {
-        try {
-            return JSON.parse(decodeURIComponent(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-        } catch (e) { return null; }
-    }
-
-    async function hCR(r) {
-        const p = dJR(r.credential);
-        if (!p) return;
-
-        const sm = document.getElementById('status-msg');
-        const eb = document.getElementById('enter-btn');
-        const lc = document.getElementById('l-c');
-
-        lc.style.display = 'none';
-        sm.innerHTML = "กำลังตรวจสอบสิทธิ์...";
-
-        try {
-            // URL ของ Apps Script ที่คุณ James Deploy ไว้
-            const u = 'https://script.google.com/macros/s/AKfycbyjbdNNVL16et_xyhPszZFQElIBMaZrtMn5SQrXL74RdOAcIWkCBuOplHE7y65LvPmCRg/exec';
-            
-            const res = await fetch(`${u}?email=${encodeURIComponent(p.email)}`, { method: 'GET' });
-            const result = await res.json();
-
-            if (result.status === "success") {
-                sm.innerHTML = "ยินดีต้อนรับคุณ " + p.name;
-                sm.style.color = "#4ade80"; // สีเขียว
-                
-                // รับ URL ลับจาก Server มาใส่ในปุ่ม
-                eb.href = result.data; 
-                eb.style.display = 'inline-block';
-            } else {
-                sm.innerHTML = result.data || "คุณไม่มีสิทธิ์เข้าใช้งาน";
-                sm.style.color = "#f87171"; // สีแดง
-                setTimeout(() => location.reload(), 3000);
-            }
-
-        } catch (err) {
-            sm.innerHTML = "ระบบขัดข้อง โปรดติดต่อ James IT";
-            setTimeout(() => location.reload(), 3000);
-        }
-    }
-</script>
+<script src="auth.js"></script>
 
 </body>
 </html>
